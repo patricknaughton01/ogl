@@ -1,0 +1,14 @@
+#version 330 core
+
+layout(location = 0) in vec3 vertexPosition_modelspace;
+// Note that this 1 equals the 1 used in glVertexAttribPointer
+layout(location = 1) in vec2 vertexUV;
+
+uniform mat4 MVP;
+out vec2 UV;
+
+void main(){
+    gl_Position = MVP * vec4(vertexPosition_modelspace,1);
+    // Color of each vertex will be interpolated to create color of each fragment
+    UV = vertexUV;
+}
