@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include <GL/glew.h>
 
@@ -14,7 +15,7 @@ using namespace glm;
 #include <common/texture.hpp>
 #include <common/controls.hpp>
 
-#define PI 3.141592653589793238
+#define PI 3.141592653589793238f
 
 int main( void )
 {
@@ -253,16 +254,29 @@ int main( void )
         glm::mat4(1.0f), glm::vec3(2.6f, 2.9f, 2.0f)
     );
     TriangleModel = glm::translate(TriangleModel, glm::vec3(0.0f, 0.0f, 0.0f));
+    long frame = 0;
+    float cam_speed = 0.01f;
+    float rad = 6.0f;
+    float field_of_view = PI/4.0f;
 
     do{
+        frame++;
         // Clear the screen
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // Use our shader
         glUseProgram(programID);
-        computeMatricesFromInputs();
-        glm::mat4 View = getViewMatrix();
-        glm::mat4 Projection = getProjectionMatrix();
+        glm::vec3 position = glm::vec3(rad * cos(frame * cam_speed), 4.0f,
+            -rad * sin(frame * cam_speed));
+        glm::vec3 right = glm::vec3(
+            -rad * sin(frame * cam_speed), 0.0f, -rad * cos(frame * cam_speed)
+        );
+        glm::mat4 View = glm::lookAt(
+            position, glm::vec3(0.0f, 0.0f, 0.0f), glm::cross(right, -position)
+        );
+        glm::mat4 Projection = glm::perspective(
+            field_of_view, 4.0f/3.0f, 0.1f, 100.0f
+        );
 
         // Our Model View Projection, remember to use reverse order
         glm::mat4 mvp = Projection * View * Model;
