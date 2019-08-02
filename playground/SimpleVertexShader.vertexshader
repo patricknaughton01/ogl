@@ -10,5 +10,5 @@ out vec2 UV;
 void main(){
     gl_Position = MVP * vec4(vertexPosition_modelspace,1);
     // Color of each vertex will be interpolated to create color of each fragment
-    UV = vertexUV;
+    UV = vec2(vertexUV[0], 1.0f - vertexUV[1]);
 }
